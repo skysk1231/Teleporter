@@ -18,11 +18,6 @@ namespace TGame_Engine
 			playerY = 0;
 		};
 		~Player() {};
-
-		void UP()
-		{
-			playerY += 0.1;
-		}
 	};
 
 	class TCommand

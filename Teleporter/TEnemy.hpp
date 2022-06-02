@@ -12,7 +12,6 @@ namespace TGame_Engine
 
 		int a = 0;
 	public :
-		float FixedX = -0.8;
 		float EnemyX[10];
 		float EnemyY[10];
 		float Speed[10];
@@ -76,7 +75,6 @@ namespace TGame_Engine
 					EnemyX[i] = -1;
 				}
 				EnemyY[i] = 1;
-				FixedX += 0.4f;
 
 				Speed[i] = 1;
 			}

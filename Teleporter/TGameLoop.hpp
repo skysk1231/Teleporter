@@ -17,13 +17,13 @@ namespace TGame_Engine
 {
 	TCommand* Key[4];
 
-	class MGameLoop
+	class TGameLoop
 	{
 	private:
 
 	public:
-		MGameLoop() { IsGameRunning = false; }
-		~MGameLoop() {}
+		TGameLoop() { IsGameRunning = false; }
+		~TGameLoop() {}
 		bool IsGameRunning;
 		bool GamePlaying;
 		bool StartScreen;
@@ -95,7 +95,6 @@ namespace TGame_Engine
 			}
 
 			Window.ExitWindow();
-
 
 		}
 		void Input()

@@ -2,7 +2,7 @@
 
 int main()
 {
-	TGame_Engine::MGameLoop gLoop;
+	TGame_Engine::TGameLoop gLoop;
 	gLoop.Run();
 
 	return 0;
