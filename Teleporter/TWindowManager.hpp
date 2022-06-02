@@ -76,6 +76,10 @@ namespace TGame_Engine
 			}
 			glfwMakeContextCurrent(window);
 			glfwSetKeyCallback(window, key_callback);
+
+
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		}
 
 		void Release()
@@ -149,6 +153,7 @@ namespace TGame_Engine
             GL_NEAREST);
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 512, 512, 0, GL_BLUE, GL_BYTE, image);
+		
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

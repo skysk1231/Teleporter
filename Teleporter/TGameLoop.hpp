@@ -25,48 +25,59 @@ namespace TGame_Engine
 		MGameLoop() { IsGameRunning = false; }
 		~MGameLoop() {}
 		bool IsGameRunning;
-		bool GamePlaying = false;
-		bool StartScreen = true;
+		bool GamePlaying;
+		bool StartScreen;
+		bool GameOverScreen;
 		WindowManager Window;
 		Enemy e;
 		Player p;
-		int b;
-
+		int LoadingScreenNum;
+		
 
 		void Run()
 		{
 			IsGameRunning = true;
 			
 			Initialize();
+			GameStartRender();
+			
 			while (IsGameRunning)
 			{
 				if (GamePlaying == false && StartScreen == true)
-				{
-					GameStartRender(); 
-					BeforeGameStart();
+				{ 
+					GameStartInput();
 				}
 				else if (GamePlaying == true && StartScreen == false) 
 				{
 					Input();
 					Update();
 					Render();
-					if (b > 30)
+					if (LoadingScreenNum > 30)
 					{
 						ColliderCheck();
 					}
 				}
 				else if(GamePlaying == false && StartScreen == false)
-				{ 
-					GameOverRender();
-					AfterGameOver();
+				{
+					GameOverInput();
+					if (!GameOverScreen)
+					{
+						GameOverRender();
+						GameOverScreen = true;
+					}
 				}
 			}
+
 			Release();
 		}
 
 	private:
 		void Initialize()
 		{
+			GamePlaying = false;
+			StartScreen = true;
+			GameOverScreen = false;
+			LoadingScreenNum = 0;
 			Window.Initialize();
 			Key[0] = new UPCommand();
 			Key[1] = new LEFTCommand();
@@ -77,6 +88,7 @@ namespace TGame_Engine
 		void Release()
 		{
 			Window.Release();
+
 			for (size_t i = 0; i < 4; i++)
 			{
 				delete(Key[i]);
@@ -84,7 +96,6 @@ namespace TGame_Engine
 
 			Window.ExitWindow();
 
-			//ddd
 
 		}
 		void Input()
@@ -107,14 +118,14 @@ namespace TGame_Engine
 			}
 			if (GetAsyncKeyState(VK_ESCAPE) & 0x8000 || GetAsyncKeyState(VK_ESCAPE) & 0x8001)
 			{
-				IsGameRunning = false;
+				ExitAll();
 			}
 			
 		}
 		void Update()
 		{
 			e.MoveEnemy();
-			b++;
+			LoadingScreenNum++;
 		
 		}
 		void Render()
@@ -138,9 +149,7 @@ namespace TGame_Engine
 		void GameStartRender()
 		{
 			Window.RenderStart();
-
 			Window.StartScreen();
-			
 			Window.RenderEnd();
 		}
 
@@ -152,39 +161,53 @@ namespace TGame_Engine
 				{
 					if (((p.playerY - 0.05) < (e.EnemyY[i] + 0.05)) && ((p.playerY + 0.05) > (e.EnemyY[i] - 0.05)))
 						GamePlaying = false;
+					GameOverScreen = false;
 				}
 			}
 		}
 
-		void AfterGameOver()
+		void GameOverInput()
 		{
 			if (GetAsyncKeyState(VK_LSHIFT) & 0x8000 || GetAsyncKeyState(VK_LSHIFT) & 0x8001)
 			{
-				IsGameRunning = false;
+				ExitAll();
 			}
 			if (GetAsyncKeyState(VK_LCONTROL) & 0x8000 || GetAsyncKeyState(VK_LCONTROL) & 0x8001)
 			{
-				GamePlaying = true;
-				for (int i = 0; i < 10; i++) {
-					e.EnemyY[i] = 1;
-				}
-				p.playerX = 0;
-				p.playerY = 0;
+				ReStart();
 			}
 			if (GetAsyncKeyState(VK_ESCAPE) & 0x8000 || GetAsyncKeyState(VK_ESCAPE) & 0x8001)
 			{
-				IsGameRunning = false;
+				ExitAll();
 			}
-
 		}
 
-		void BeforeGameStart()
+		void GameStartInput()
 		{
 			if (GetAsyncKeyState(VK_SPACE) & 0x8000 || GetAsyncKeyState(VK_SPACE) & 0x8001)
 			{
 				GamePlaying = true;
 				StartScreen = false;
 			}
+			if (GetAsyncKeyState(VK_ESCAPE) & 0x8000 || GetAsyncKeyState(VK_ESCAPE) & 0x8001)
+			{
+				ExitAll();
+			}
+		}
+
+		void ExitAll()
+		{
+			IsGameRunning = false;
+		}
+
+		void ReStart()
+		{
+			GamePlaying = true;
+			for (int i = 0; i < 10; i++) {
+				e.EnemyY[i] = 1;
+			}
+			p.playerX = 0;
+			p.playerY = 0;
 		}
 	};
 }
