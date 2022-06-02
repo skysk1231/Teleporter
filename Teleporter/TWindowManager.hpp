@@ -5,11 +5,43 @@
 #include <thread>
 #include <stdio.h>
 
-
 static GLuint texName;
 
 namespace TGame_Engine
 {
+	
+	typedef struct tagBITMAPHEADER {
+		BITMAPFILEHEADER bf;
+		BITMAPINFOHEADER bi;
+		RGBQUAD hRGB[256];
+	}BITMAPHEADER;
+
+	BYTE* LoadBitmapFile(BITMAPHEADER* bitmapHeader, int* imgSize, const char* filename)
+	{
+		FILE* fp = fopen(filename, "rb");
+		if (fp == NULL)
+		{
+			printf("파일로딩에 실패했습니다.\n");
+			return NULL;
+		}
+		else
+		{
+			fread(&bitmapHeader->bf, sizeof(BITMAPFILEHEADER), 1, fp);
+			fread(&bitmapHeader->bi, sizeof(BITMAPINFOHEADER), 1, fp);
+			fread(&bitmapHeader->hRGB, sizeof(RGBQUAD), 256, fp);
+
+			int imgSizeTemp = bitmapHeader->bi.biWidth * bitmapHeader->bi.biHeight;
+			*imgSize = imgSizeTemp;   // 이미지 사이즈를 상위 변수에 할당
+
+			BYTE* image = (BYTE*)malloc(sizeof(BYTE) * imgSizeTemp);
+			fread(image, sizeof(BYTE), imgSizeTemp, fp);
+			fclose(fp);
+
+
+			return image;
+		}
+	}
+
 	class WindowManager
 	{
 		GLFWwindow* window;
@@ -25,6 +57,7 @@ namespace TGame_Engine
 		}
 	public:
 
+		
 		int IsWindowClose()
 		{
 			return glfwWindowShouldClose(window);
@@ -85,7 +118,99 @@ namespace TGame_Engine
 			glEnd();
 		}
 
+		void ExitWindow()
+		{
+
+			glfwDestroyWindow(window);
+			glfwTerminate();
+
+			exit(EXIT_SUCCESS);
+		}
+		void EndScreen()
+    {
+        glClearColor(0.0, 0.0, 0.0, 0.0);
+
+        BITMAPHEADER originalHeader;
+        int imgSize;
+        BYTE* image = LoadBitmapFile(&originalHeader, &imgSize, "EndScreen.bmp");
+        
+        if (image == NULL) return;
+
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+        glGenTextures(1, &texName);
+        glBindTexture(GL_TEXTURE_2D, texName);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+            GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+            GL_NEAREST);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 512, 512, 0, GL_BLUE, GL_BYTE, image);
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		glEnable(GL_TEXTURE_2D);
+		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+		glBindTexture(GL_TEXTURE_2D, texName);
+
+		glBegin(GL_QUADS);
+		glTexCoord2f(0.0, 0.0);  glVertex3f(-1.0f, -1.0f, 0.0f);
+		glTexCoord2f(0.0, 1.0);  glVertex3f(-1.0f, 1.0f, 0.0f);
+		glTexCoord2f(1.0, 1.0);  glVertex3f(1.0f, 1.0f, 0.0f);
+		glTexCoord2f(1.0, 0.0);  glVertex3f(1.0f, -1.0f, 0.0f);
+
+
+		glEnd();
+		glFlush();
+		glDisable(GL_TEXTURE_2D);
+    }
+
+    void StartScreen()
+    {
+        glClearColor(0.0, 0.0, 0.0, 0.0);
+
+        BITMAPHEADER originalHeader;
+        int imgSize;
+        BYTE* image = LoadBitmapFile(&originalHeader, &imgSize, "StartScreen.bmp");
+
+        if (image == NULL) return;
+
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+        glGenTextures(1, &texName);
+        glBindTexture(GL_TEXTURE_2D, texName);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+            GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+            GL_NEAREST);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 512, 512, 0, GL_BLUE, GL_BYTE, image);
+		
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		glEnable(GL_TEXTURE_2D);
+		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+		glBindTexture(GL_TEXTURE_2D, texName);
+
+		glBegin(GL_QUADS);
+		glTexCoord2f(0.0, 0.0);  glVertex3f(-1.0f, -1.0f, 0.0f);
+		glTexCoord2f(0.0, 1.0);  glVertex3f(-1.0f, 1.0f, 0.0f);
+		glTexCoord2f(1.0, 1.0);  glVertex3f(1.0f, 1.0f, 0.0f);
+		glTexCoord2f(1.0, 0.0);  glVertex3f(1.0f, -1.0f, 0.0f);
+
+
+		glEnd();
+		glFlush();
+		glDisable(GL_TEXTURE_2D);
+    }
 
 	};
+
 
 }

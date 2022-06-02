@@ -3,60 +3,88 @@
 
 using namespace std;
 
+
 namespace TGame_Engine
 {
+	
 	class Player
 	{
 	public:
-		float playerX =0;
-		float playerY =0;
+		float playerX;
+		float playerY;
+
 		Player() {
+			playerX = 0;
+			playerY = 0;
 		};
 		~Player() {};
+
+		void UP()
+		{
+			playerY += 0.1;
+		}
 	};
 
 	class TCommand
 	{
-		
 	public:
-		Player p;
+		
 		TCommand() {}
 		virtual ~TCommand() {}
 
-		virtual void Execute() {}
+		virtual void Execute(Player* p) {}
 	};
 
 	class UPCommand :public TCommand
 	{
 	public:
-		void Execute()
+		void Execute(Player* p)
 		{
-			p.playerY += 0.1;
+			if (p->playerY > 1)
+			{
+				p->playerY = 1;
+			}
+			p->playerY += 0.01f;
+			
 		}
 	};
 	class LEFTCommand :public TCommand
 	{
 	public:
-		void Execute()
+		void Execute(Player* p)
 		{
-			p.playerX -= 0.1f;
+			if (p->playerX < -1)
+			{
+				p->playerX = -1;
+			}
+			p->playerX -= 0.01f;
+			
 		}
 	};
 	class RIGHTCommand :public TCommand
 	{
 	public:
-		void Execute()
+		void Execute(Player* p)
 		{
-			p.playerX += 0.1;
-			cout << p.playerX;
+			if (p->playerX > 1)
+			{
+				p->playerX = 1;
+			}
+			p->playerX += 0.01f;
+			
 		}
 	};
 	class DOWNCommand : public TCommand
 	{
 	public:
-		void Execute()
+		void Execute(Player* p)
 		{
-			p.playerY -= 0.1;
+			if (p->playerY < -1)
+			{
+				p->playerY = -1;
+			}
+			p->playerY -= 0.01f;
+			
 		}
 	};
 }

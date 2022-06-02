@@ -102,7 +102,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)  ;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -137,6 +137,11 @@
     <ClInclude Include="TGameLoop.hpp" />
     <ClInclude Include="TPlayer.hpp" />
     <ClInclude Include="TWindowManager.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="EndScreen.bmp" />
+    <Image Include="lena_gray.bmp" />
+    <Image Include="StartScreen.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
